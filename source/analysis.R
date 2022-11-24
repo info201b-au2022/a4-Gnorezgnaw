@@ -29,6 +29,55 @@ test_query2 <- function(num=6) {
 #----------------------------------------------------------------------------#
 # Your functions and variables might go here ... <todo: update comment>
 #----------------------------------------------------------------------------#
+# What year had the largest jail population
+largest_year <- function(){
+  largest_pop <- df %>% 
+    select(year, total_jail_pop) %>% 
+    drop_na() %>% 
+    group_by(year) %>% 
+    summarise(all_jail_pop = sum(total_jail_pop, na.rm = TRUE)) %>% 
+    filter(all_jail_pop == max(all_jail_pop)) %>% 
+    pull(year)
+  return(largest_pop)
+}
+
+# What year had the least jail population?
+least_year <- function(){
+  least_pop <- df %>% 
+    select(year, total_jail_pop) %>% 
+    drop_na() %>% 
+    group_by(year) %>% 
+    summarise(all_jail_pop = sum(total_jail_pop, na.rm = TRUE)) %>% 
+    filter(all_jail_pop == min(all_jail_pop)) %>% 
+    pull(year)
+  return(least_pop)
+}
+
+# What was the largest jail population for the location above?
+l_pop <- function(){
+  least <- df %>% 
+    select(year, total_jail_pop) %>% 
+    drop_na() %>% 
+    group_by(year) %>% 
+    summarise(all_jail_pop = sum(total_jail_pop, na.rm = TRUE)) %>% 
+    filter(all_jail_pop == min(all_jail_pop)) %>% 
+    pull(all_jail_pop)
+  return(prettyNum(least,big.mark=",",scientific=FALSE))
+}
+
+# What was the jail population in 2008?
+max_pop <- function(){
+  max_p <- df %>% 
+    select(year, total_jail_pop) %>% 
+    drop_na() %>% 
+    group_by(year) %>% 
+    summarise(all_jail_pop = sum(total_jail_pop, na.rm = TRUE)) %>% 
+    filter(all_jail_pop == max(all_jail_pop)) %>% 
+    pull(all_jail_pop)
+  return(prettyNum(max_p,big.mark=",",scientific=FALSE))
+}
+
+
 
 ## Section 3  ---- 
 #----------------------------------------------------------------------------#
@@ -92,7 +141,7 @@ plot_jail_pop_by_states <- function(states){
 get_jail_pop_by_urbanicity<- function(urbanity) {
   urbanity_data <- df %>% 
     select(year, total_jail_pop, urbanicity, fips) %>% 
-    group_by(year, urbanicity, fips) %>% 
+    group_by(year, urbanicity) %>% 
     filter(urbanicity %in% urbanity) %>% 
     summarise(urbanaicity_all = sum(total_jail_pop, na.rm = TRUE), .groups = "drop")
   return(urbanity_data) 
@@ -115,7 +164,7 @@ plot_jail_pop_by_urbanicity <- function(urbanity){
 # Your functions might go here ... <todo:  update comment>
 # See Canvas
 #----------------------------------------------------------------------------#
-
+# This function returns map_data by urbanicity
 county_shapes <- map_data("county") %>% 
   unite(polyname, region, subregion, sep = ",") %>% 
   left_join(county.fips, by = "polyname")
@@ -126,16 +175,16 @@ map_data <- county_shapes %>%
 
 
 blank_theme <- theme_bw() +
-    theme(
-      axis.line = element_blank(),        
-      axis.text = element_blank(),        
-      axis.ticks = element_blank(),       
-      axis.title = element_blank(),       
-      plot.background = element_blank(),  
-      panel.grid.major = element_blank(), 
-      panel.grid.minor = element_blank(), 
-      panel.border = element_blank()      
-    )
+  theme(
+    axis.line = element_blank(),        
+    axis.text = element_blank(),        
+    axis.ticks = element_blank(),       
+    axis.title = element_blank(),       
+    plot.background = element_blank(),  
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank(), 
+    panel.border = element_blank()      
+  )
 
 cases_map <- ggplot(map_data) +
   geom_polygon(
@@ -145,9 +194,12 @@ cases_map <- ggplot(map_data) +
   ) +
   coord_map() +
   scale_fill_continuous(limits=c(0,max(map_data$urbanaicity_all)),
-                                 na.value = "white", low = "yellow", high = "red") +
+                        na.value = "white", low = "yellow", high = "red") +
   labs(fill = "Urbanicity Inequality Map") +
   blank_theme 
+
+
+
 
 
 ## Load data frame ---- 

@@ -1,7 +1,7 @@
 ---
 title: "Report on potential inequality in prison system"
 author: "Zerong Wang"
-date: '2022-11-01'
+date: '2022-11-22'
 output: html_document
 ---
 
@@ -14,30 +14,43 @@ source("../source/analysis.R")
 One of the sharpest manifestations of racism in the United States is its prison system. In this report, I will use incarceration data collected by the Vera Institute to expose patterns of inequality. I will present a brief analysis of a dataset of trends in incarceration in the United States and use the data and calculations from the dataset to provide visualizations as evidence of patterns of inequality in the exposed prison system.
 
 ## Introduction
-
+According to the Vera Institute, the U.S. is home to less than 5 percent of the world’s population, yet nearly 16 percent of all incarcerated people—roughly two million people—are held in jails and prisons. Regarding the incarceration trends dataset, a related social issue is what is the relationship between the incarceration population and the county urbanicity(urbanization). In the book _Data Feminism_, one concept named **the Matrix of Domination** divides the oppression in four domains. The four domains of the matrix of domination are the structural domain, the disciplinary domain, the hegemonic domain and the interpersonal domain, which refers to the idea that people perceive oppression from the perspectives of laws, policies, bureaucracy, hierarchy, culture, media, and individual experiences. People of color, immigrants, and people experiencing poverty are more likely to be oppressed by policies and disproportionately incarcerated so the direct stakeholders are the prisoners and prison staff and the indirect stakeholders are their family and friends. I think the central value is about fundamental human rights and dignity. In order to solve the related issues, we need to analysis the dataset. 
 
 ## Data summary
+The U.S. incarceration population increased dramatically. According to the data set, 
+the year with the largest prison population is `r largest_year()` and the population 
+is `r max_pop()`. The year with the least prison population is `r least_year()`
+and the population is `r l_pop()`. These data can help us better understand the impact of current 
+mass incarceration, that prison overcrowding and the reduction in services and facilities provided to
+those incarcerated. 
 
 ## Growth of the U.S. Prison Population
 ```{r, echo=FALSE, eval=TRUE}
 plot_jail_pop_for_us()
 ```
-This above chart shows the trend in the growth of the U.S. jail population over time.
+This above chart shows the trend in the growth of the U.S. jail population over time. The first
+question is, when did the prison population growth rate become faster? We can see from the graph that
+the growth rate was not very fast between 1970 and 1980, but from 1980, the growth rate of the prison population became faster until reaches the peak in 2008.
 
 ##  Growth of Prison Population by State 
 ```{r, echo=FALSE, eval=TRUE}
 plot_jail_pop_by_states(c("WA", "OR", "CA"))
 ```
-In the chart above, it shows the trend in the growth of the prison populations of California, Washington, and 
-Oregon over time. 
+In the chart above, it shows the trend in the growth of the prison populations of California, 
+Washington, and Oregon over time. The key patterns shown in this chart can help us to solve the 
+second question that which states have faster growing prison populations.For example, we can see from
+the chart above that California's prison population growth is much higher than the other two states. 
 
 ## Comparison urbanicity inequality 
 Do some kinds of counties seem to imprison more people than other kinds of counties? 
 ```{r, echo=FALSE, eval=TRUE}
 plot_jail_pop_by_urbanicity(c("rural", "small/mid", "suburban", "urban"))
 ```
+In the chart above, the trend in prison population growth is shown for four different urbanicity in
+the dataset. This helps us to address the third question, which is what kind of counties have a f
+aster growing prison population. From the chart we can see that the prison population is growing 
+faster in urban and small/medium counties than in suburban and rural counties. 
 
 ## Map
 ```{r, echo=FALSE, eval=TRUE}
-cases_map
 ```
