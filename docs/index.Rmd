@@ -1,5 +1,5 @@
 ---
-title: "Report on racism in prison system"
+title: "Report on potential inequality in prison system"
 author: "Zerong Wang"
 date: '2022-11-01'
 output: html_document
@@ -11,7 +11,7 @@ source("../source/analysis.R")
 ```
 
 ## Abstract 
-[TODO: Include a short abstract (about 50 words)]
+One of the sharpest manifestations of racism in the United States is its prison system. In this report, I will use incarceration data collected by the Vera Institute to expose patterns of inequality. I will present a brief analysis of a dataset of trends in incarceration in the United States and use the data and calculations from the dataset to provide visualizations as evidence of patterns of inequality in the exposed prison system.
 
 ## Introduction
 
@@ -31,13 +31,13 @@ plot_jail_pop_by_states(c("WA", "OR", "CA"))
 In the chart above, it shows the trend in the growth of the prison populations of California, Washington, and 
 Oregon over time. 
 
-## Comparison inequality 
+## Comparison urbanicity inequality 
 Do some kinds of counties seem to imprison more people than other kinds of counties? 
 ```{r, echo=FALSE, eval=TRUE}
 plot_jail_pop_by_urbanicity(c("rural", "small/mid", "suburban", "urban"))
 ```
 
-
-## Map 
-* Here's another test. A vector
-of numbers: `r test_query2(num)`.
+## Map
+```{r, echo=FALSE, eval=TRUE}
+cases_map
+```

@@ -1,10 +1,11 @@
-library("tidyverse")
-library("dplyr")
-library("ggplot2")
-library("plotly")
-library("mapproj")
-library("patchwork")
-library("leaflet")
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(plotly)
+library(mapproj)
+library(maps)
+library(patchwork)
+library(leaflet)
 
 # The functions might be useful for A4
 source("~/Documents/info201/assignments/a4-Gnorezgnaw/source/a4-helpers.R")
@@ -90,8 +91,8 @@ plot_jail_pop_by_states <- function(states){
 # This function returns total jail population count grouped by years and urbanicity
 get_jail_pop_by_urbanicity<- function(urbanity) {
   urbanity_data <- df %>% 
-    select(year, total_jail_pop, urbanicity) %>% 
-    group_by(year, urbanicity) %>% 
+    select(year, total_jail_pop, urbanicity, fips) %>% 
+    group_by(year, urbanicity, fips) %>% 
     filter(urbanicity %in% urbanity) %>% 
     summarise(urbanaicity_all = sum(total_jail_pop, na.rm = TRUE), .groups = "drop")
   return(urbanity_data) 
@@ -114,9 +115,39 @@ plot_jail_pop_by_urbanicity <- function(urbanity){
 # Your functions might go here ... <todo:  update comment>
 # See Canvas
 #----------------------------------------------------------------------------#
-get_inequality_map <- function(){
-  
-}
+
+county_shapes <- map_data("county") %>% 
+  unite(polyname, region, subregion, sep = ",") %>% 
+  left_join(county.fips, by = "polyname")
+
+map_data <- county_shapes %>% 
+  left_join(urbanity_data, by = "fips") %>% 
+  filter(urbanicity != "")
+
+
+blank_theme <- theme_bw() +
+    theme(
+      axis.line = element_blank(),        
+      axis.text = element_blank(),        
+      axis.ticks = element_blank(),       
+      axis.title = element_blank(),       
+      plot.background = element_blank(),  
+      panel.grid.major = element_blank(), 
+      panel.grid.minor = element_blank(), 
+      panel.border = element_blank()      
+    )
+
+cases_map <- ggplot(map_data) +
+  geom_polygon(
+    mapping = aes(x = long, y = lat, group = group, fill = urbanaicity_all),
+    color = "gray",
+    size = .3        
+  ) +
+  coord_map() +
+  scale_fill_continuous(limits=c(0,max(map_data$urbanaicity_all)),
+                                 na.value = "white", low = "yellow", high = "red") +
+  labs(fill = "Urbanicity Inequality Map") +
+  blank_theme 
 
 
 ## Load data frame ---- 
