@@ -2,7 +2,6 @@ library("tidyverse")
 library("dplyr")
 library("ggplot2")
 library("plotly")
-library("maps")
 library("mapproj")
 library("patchwork")
 library("leaflet")
@@ -87,9 +86,27 @@ plot_jail_pop_by_states <- function(states){
 # Your functions might go here ... <todo:  update comment>
 # See Canvas
 #----------------------------------------------------------------------------#
-get_jail_pop_by_race<- function(race) {
-  
+# Do some kinds of counties seem to imprison more people than other kinds of counties? 
+# This function returns total jail population count grouped by years and urbanicity
+get_jail_pop_by_urbanicity<- function(urbanity) {
+  urbanity_data <- df %>% 
+    select(year, total_jail_pop, urbanicity) %>% 
+    group_by(year, urbanicity) %>% 
+    filter(urbanicity %in% urbanity) %>% 
+    summarise(urbanaicity_all = sum(total_jail_pop, na.rm = TRUE), .groups = "drop")
+  return(urbanity_data) 
 }
+
+# # This is the code for plotting the chart
+plot_jail_pop_by_urbanicity <- function(urbanity){
+  plot_urbanicity <- ggplot(data = get_jail_pop_by_urbanicity(urbanity)) +
+    geom_line(mapping = aes(x = year, y = urbanaicity_all, colour = urbanicity)) +
+    labs(title = "Growth of Prison Population by Urbanicity (1970-2018)", 
+         x = "Year",
+         y = "Total Jail Population")
+  return(ggplotly(plot_urbanicity))   
+}
+
 
 ## Section 6  ---- 
 #----------------------------------------------------------------------------#
@@ -100,6 +117,8 @@ get_jail_pop_by_race<- function(race) {
 get_inequality_map <- function(){
   
 }
+
+
 ## Load data frame ---- 
 
 

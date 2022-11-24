@@ -28,14 +28,16 @@ This above chart shows the trend in the growth of the U.S. jail population over 
 ```{r, echo=FALSE, eval=TRUE}
 plot_jail_pop_by_states(c("WA", "OR", "CA"))
 ```
-In the chart above, it shows the trend in the growth of the prison populations of California, Washington, and Oregon over time. 
+In the chart above, it shows the trend in the growth of the prison populations of California, Washington, and 
+Oregon over time. 
 
 ## Comparison inequality 
+Do some kinds of counties seem to imprison more people than other kinds of counties? 
+```{r, echo=FALSE, eval=TRUE}
+plot_jail_pop_by_urbanicity(c("rural", "small/mid", "suburban", "urban"))
+```
+
 
 ## Map 
-
-* Here's a test of a dynamic variable. Say **"`r q1_string`!!!** 
 * Here's another test. A vector
 of numbers: `r test_query2(num)`.
-
-
