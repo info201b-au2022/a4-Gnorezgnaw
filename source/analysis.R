@@ -1,8 +1,15 @@
-library(tidyverse)
+library("tidyverse")
+library("dplyr")
+library("ggplot2")
+library("plotly")
+library("maps")
+library("mapproj")
+library("patchwork")
+library("leaflet")
 
 # The functions might be useful for A4
-source("../source/a4-helpers.R")
-
+source("~/Documents/info201/assignments/a4-Gnorezgnaw/source/a4-helpers.R")
+df <- read.csv("https://raw.githubusercontent.com/vera-institute/incarceration-trends/master/incarceration_trends.csv", stringsAsFactors = FALSE)
 ## Test queries ----
 #----------------------------------------------------------------------------#
 # Simple queries for basic testing
@@ -28,16 +35,23 @@ test_query2 <- function(num=6) {
 # Growth of the U.S. Prison Population
 # Your functions might go here ... <todo:  update comment>
 #----------------------------------------------------------------------------#
-# This function ... <todo:  update comment>
+# This function returns total jail population count grouped by years <todo:  update comment>
 get_year_jail_pop <- function() {
-  # TODO: Implement this function 
-return()   
+  plot_data <- df %>% 
+    select(year, total_jail_pop) %>% 
+    group_by(year) %>% 
+    summarise(all_jail_pop = sum(total_jail_pop, na.rm = TRUE))
+return(plot_data)   
 }
 
-# This function ... <todo:  update comment>
+# This is the code for plotting the chart <todo:  update comment>
 plot_jail_pop_for_us <- function()  {
-  # TODO: Implement this function 
-  return()   
+  plot1 <- ggplot(data = get_year_jail_pop()) +
+    geom_col(mapping = aes(x = year, y = all_jail_pop)) +
+    labs(title = "Increase of Jail Population in U.S. (1970-2018)", 
+           x = "Year",
+           y = "Total Jail Population")
+  return(ggplotly(plot1))   
 } 
 
 ## Section 4  ---- 
@@ -46,6 +60,26 @@ plot_jail_pop_for_us <- function()  {
 # Your functions might go here ... <todo:  update comment>
 # See Canvas
 #----------------------------------------------------------------------------#
+# This function returns total jail population count grouped by years and states
+get_jail_pop_by_states <- function(states) {
+  state_data <- df %>% 
+    select(year, state, total_jail_pop) %>% 
+    group_by(year, state) %>% 
+    filter(state %in% states) %>% 
+    summarise(state_jail_pop = sum(total_jail_pop, na.rm = TRUE), .groups = "drop")
+  return(state_data)
+}
+
+# This is the code for plotting the chart on states
+plot_jail_pop_by_states <- function(states){
+  plot_state <- ggplot(data = get_jail_pop_by_states(states)) +
+    geom_line(mapping = aes(x = year, y = state_jail_pop, colour = state)) +
+    labs(title = "Growth of Prison Population by State (1970-2018)", 
+         x = "Year",
+         y = "State Total Jail Population")
+  return(ggplotly(plot_state))   
+}
+
 
 ## Section 5  ---- 
 #----------------------------------------------------------------------------#
@@ -53,6 +87,9 @@ plot_jail_pop_for_us <- function()  {
 # Your functions might go here ... <todo:  update comment>
 # See Canvas
 #----------------------------------------------------------------------------#
+get_jail_pop_by_race<- function(race) {
+  
+}
 
 ## Section 6  ---- 
 #----------------------------------------------------------------------------#
@@ -60,7 +97,9 @@ plot_jail_pop_for_us <- function()  {
 # Your functions might go here ... <todo:  update comment>
 # See Canvas
 #----------------------------------------------------------------------------#
-
+get_inequality_map <- function(){
+  
+}
 ## Load data frame ---- 
 
 
