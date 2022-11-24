@@ -152,6 +152,7 @@ plot_jail_pop_by_urbanicity <- function(urbanity){
   plot_urbanicity <- ggplot(data = get_jail_pop_by_urbanicity(urbanity)) +
     geom_line(mapping = aes(x = year, y = urbanaicity_all, colour = urbanicity)) +
     labs(title = "Growth of Prison Population by Urbanicity (1970-2018)", 
+         subtitle = "urbanicity county comparison that reveals potential patterns of inequality",
          x = "Year",
          y = "Total Jail Population")
   return(ggplotly(plot_urbanicity))   
@@ -164,15 +165,20 @@ plot_jail_pop_by_urbanicity <- function(urbanity){
 # Your functions might go here ... <todo:  update comment>
 # See Canvas
 #----------------------------------------------------------------------------#
-# This function returns map_data by urbanicity
+# This function returns county map_data by state
+df1 <- df %>% 
+  select(fips, year, state, county_name, total_jail_pop) %>% 
+  filter(year == "2018")
 county_shapes <- map_data("county") %>% 
   unite(polyname, region, subregion, sep = ",") %>% 
   left_join(county.fips, by = "polyname")
 
-map_data <- county_shapes %>% 
-  left_join(urbanity_data, by = "fips") %>% 
-  filter(urbanicity != "")
-
+get_map_data <- function(states){
+  map_data <- county_shapes %>% 
+    left_join(df1, by="fips") %>% 
+    filter(state == states & county_name != "") 
+  return(map_data)  
+}
 
 blank_theme <- theme_bw() +
   theme(
@@ -186,20 +192,23 @@ blank_theme <- theme_bw() +
     panel.border = element_blank()      
   )
 
-cases_map <- ggplot(map_data) +
-  geom_polygon(
-    mapping = aes(x = long, y = lat, group = group, fill = urbanaicity_all),
+# This is the code for plotting the chart
+plot_map <- function(states){
+  cases_map <- ggplot(get_map_data(states)) +
+    geom_polygon(
+    mapping = aes(x = long, y = lat, group = group, fill = total_jail_pop),
     color = "gray",
-    size = .3        
-  ) +
-  coord_map() +
-  scale_fill_continuous(limits=c(0,max(map_data$urbanaicity_all)),
+    linewidth = .3        
+    ) +
+    scale_fill_continuous(limits=c(0, max(get_map_data(states)$total_jail_pop)),
                         na.value = "white", low = "yellow", high = "red") +
-  labs(fill = "Urbanicity Inequality Map") +
-  blank_theme 
-
-
-
+    labs(title = "County Prison Population Map by State(2018)",
+         subtitle = "A map shows county inequality by states",
+         fill = "County jail population") +
+    blank_theme +
+    coord_map() 
+  return(ggplotly(cases_map))
+}
 
 
 ## Load data frame ---- 

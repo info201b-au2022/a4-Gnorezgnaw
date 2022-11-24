@@ -51,6 +51,11 @@ the dataset. This helps us to address the third question, which is what kind of 
 aster growing prison population. From the chart we can see that the prison population is growing 
 faster in urban and small/medium counties than in suburban and rural counties. 
 
-## Map
+## Map of County Potential Patterns of Inequality by State
 ```{r, echo=FALSE, eval=TRUE}
+plot_map("WA")
 ```
+The chart above shows the distribution of the number of jail populations by county in Washington
+State. This function can help us solve our last problem, which is how to visualize the distribution
+of the number of prison populations in counties of different states, to easily analyze the data. 
+
